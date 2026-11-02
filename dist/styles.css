@@ -29,10 +29,11 @@ h1 em, h2 em { color: var(--burgundy); font-style: normal; }
 .button { border: 0; border-radius: 999px; padding: 14px 25px; text-decoration: none; display: inline-flex; justify-content: center; align-items: center; gap: 10px; font-weight: 400; transition: transform .2s ease, box-shadow .2s ease; }
 .button:hover { transform: translateY(-2px); }.button-primary { background: var(--burgundy); color: white; box-shadow: 0 12px 30px rgba(111,18,13,.22); }.button-light { background: var(--paper); color: var(--burgundy-dark); box-shadow: 0 12px 30px rgba(32,23,24,.16); }.button-lilac { background: var(--glacier); color: var(--night); }
 .text-link { text-underline-offset: 5px; font-size: 14px; }.hero-note { margin-top: 24px; font-size: 12px; opacity: .72; }
-.hero-statement { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding: 150px clamp(28px,5vw,74px) 80px; color: var(--ivory); background: var(--burgundy); }
-.hero-statement span { color: var(--glacier); font-size: 11px; letter-spacing: .18em; }
-.hero-statement blockquote { margin: 28px 0 0; font: 300 clamp(30px,3.7vw,52px)/1.5 var(--serif); }
-.hero-statement strong { color: var(--glacier); font-weight: 400; }
+.hero-portrait { position: relative; z-index: 1; min-width: 0; min-height: 94svh; margin: 0; overflow: hidden; background: var(--burgundy); }
+.hero-portrait::after { content: ""; position: absolute; inset: 50% 0 0; background: linear-gradient(transparent,rgba(48,17,13,.58)); pointer-events: none; }
+.hero-portrait img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: 50% 34%; }
+.hero-portrait figcaption { position: absolute; z-index: 2; right: 30px; left: 30px; bottom: 32px; padding-top: 16px; color: white; border-top: 1px solid rgba(255,255,255,.55); }
+.hero-portrait figcaption span { display: block; font-size: 10px; letter-spacing: .17em; opacity: .8; }.hero-portrait figcaption strong { display: block; margin-top: 3px; font: 300 18px/1.5 var(--serif); }
 .hero-side { position: absolute; z-index: 2; left: 28px; bottom: 34px; margin: 0; writing-mode: vertical-rl; font-size: 10px; letter-spacing: .12em; opacity: .55; color: white; }
 .section-shell { width: min(1120px,calc(100% - 44px)); margin: auto; display: grid; grid-template-columns: 150px 1fr; gap: clamp(28px,7vw,100px); }
 .section-marker { font: 300 58px/1 var(--serif); color: var(--lilac); opacity: .7; }
@@ -71,7 +72,7 @@ h1 em, h2 em { color: var(--burgundy); font-style: normal; }
 footer { display: flex; justify-content: space-between; gap: 15px; padding: 24px clamp(22px,6vw,80px); color: #c7d9d8; background: var(--burgundy-dark); font-size: 11px; }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @media (max-width:760px) {
-  .site-header { padding: 22px; }.site-header nav { gap: 15px; font-size: 11px; }.site-header nav a:nth-child(n+3) { display: none; }.hero { min-height: 0; grid-template-columns: 1fr; }.hero::after { width: 70px; height: 70px; right: auto; left: 22px; top: 110px; }.hero-content { padding: 145px 24px 72px; }.hero h1 { font-size: 53px; }.hero-statement { padding: 64px 24px 74px; }.hero-side { display: none; }
+  .site-header { padding: 22px; }.site-header nav { gap: 15px; font-size: 11px; }.site-header nav a:nth-child(n+3) { display: none; }.hero { min-height: 0; grid-template-columns: 1fr; }.hero::after { width: 70px; height: 70px; right: auto; left: 22px; top: 110px; }.hero-content { padding: 145px 24px 72px; }.hero h1 { font-size: 53px; }.hero-portrait { min-height: 72svh; }.hero-portrait img { object-position: 50% 30%; }.hero-side { display: none; }
   .section-shell { grid-template-columns: 1fr; gap: 20px; }.section-marker { font-size: 38px; }.invitation, .way { padding: 82px 0; }.two-columns, .journey-grid, .answers, .principles, .report-grid { grid-template-columns: 1fr; }.journeys-section { padding: 76px 12px 92px; }.journey-app, .app-screen { min-height: 620px; }.journey-app { border-radius: 24px; }.app-screen { padding: 29px 21px 88px; }.journey-card { min-height: auto; padding: 19px; }.journey-card strong { margin: 5px 0; }.journey-number { float: left; font-size: 25px; }.question-wrap { margin-top: 38px; }.stop-button { left: 14px; right: 14px; bottom: 12px; width: calc(100% - 28px); }.report-block.full { grid-column: auto; }.home-evening { grid-template-columns: 1fr; }.evening-copy { padding: 76px 24px; }.evening-statement { padding: 64px 24px; } footer { display: block; text-align: center; } footer span { display: block; margin: 5px; }
 }
 @media print {
