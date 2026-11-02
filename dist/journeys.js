@@ -154,12 +154,6 @@ function celebrate(stopped) {
   if (resume) resume.onclick = renderQuestion;
 }
 
-function dominantTag() {
-  const counts = {};
-  answers.forEach(answer => { if (answer?.tag) counts[answer.tag] = (counts[answer.tag] || 0) + 1; });
-  return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || Object.keys(current.insights)[0];
-}
-
 function answerLabel(answer, position) {
   if (!answer || answer.skipped) return 'בחרת להשאיר את השאלה פתוחה.';
   const option = current.questions[position].options.find(([, tag]) => tag === answer.tag)?.[0] || '';
@@ -167,12 +161,27 @@ function answerLabel(answer, position) {
 }
 
 function renderReport() {
-  const tag = dominantTag();
-  const insight = current.insights[tag] || Object.values(current.insights)[0];
+  const answered = answers.map((answer, index) => answer && !answer.skipped ? { answer, index } : null).filter(Boolean);
   const answeredCount = answers.filter(answer => answer && !answer.skipped).length;
-  const anchor = [...answers].reverse().find(answer => answer && !answer.skipped);
-  const anchorText = anchor ? answerLabel(anchor, answers.lastIndexOf(anchor)) : 'אפשר להשאיר את המילים פתוחות ולחזור אליהן בזמן אחר.';
-  show(`<div class="report-head"><p class="kicker dark" style="justify-content:center">Joyfulness · השיקוף האישי שלך</p><h3>${current.title}</h3><p>אספת ${answeredCount} תשובות. זהו שיקוף עדין של מה שבחרת לשתף עכשיו — לא ציון ולא אבחון.</p></div><div class="report-grid"><section class="report-block"><h4>מה כבר חי בך</h4><p>${insight[0]}</p></section><section class="report-block"><h4>מה מבקש מקום</h4><p>${insight[1]}</p></section><section class="report-block full"><h4>מילים לקחת איתך</h4><p>${escapeHtml(anchorText)}</p></section><section class="report-block full"><h4>הזמנה עדינה, רק אם מתאים</h4><p>${current.invitation}</p></section></div><div class="answers-report"><h4>המסע, במילים שלך</h4>${current.questions.map((question, index) => `<div class="answer-row"><small>${question.text}</small><p>${escapeHtml(answerLabel(answers[index], index))}</p></div>`).join('')}</div><div class="ai-later"><strong>בהמשך:</strong> הדוח יוכל לקבל שכבת שיקוף אישית דרך AI מאובטח. כרגע הוא נבנה רק מהבחירות שלך, בדפדפן, ואינו נשלח לשום מקום.</div><div class="controls"><button class="primary-action" id="printReport" type="button">להדפסה / שמירה כ־PDF</button><button class="secondary-action" id="anotherJourney" type="button">לבחור מסע נוסף</button><a class="secondary-action" href="#meeting">להיכרות אישית</a></div>`, 'report-screen');
+  const first = answered[0];
+  const later = answered[Math.min(2, answered.length - 1)] || first;
+  const strength = first ? (current.insights[first.answer.tag] || Object.values(current.insights)[0])[0] : 'בחרת לעצור ולהקשיב, וגם זו כבר תנועה של נאמנות לעצמך.';
+  const need = later ? (current.insights[later.answer.tag] || Object.values(current.insights)[0])[1] : 'מה שמבקש מקום יכול להישאר פתוח. אין צורך לנסח אותו לפני שהוא מוכן.';
+  const labels = current.questions.map((_, index) => answerLabel(answers[index], index));
+  const mirrors = {
+    visibility: `כששאלו איך את, ענית: „${labels[0]}”. כשמגיעה אלייך הכרה, ענית: „${labels[1]}”. החיבור בין שתי התשובות מזמין לבדוק לא רק מי רואה אותך — אלא גם כמה את מאפשרת לעצמך להישאר נראית.`,
+    boundaries: `מול בקשה, התשובה הראשונה שלך הייתה: „${labels[0]}”. וכשרצית לומר לא, סימנת: „${labels[1]}”. בין הידיעה הפנימית לבין המילים שיוצאות החוצה נמצא הגבול שלך — לא כחומה, אלא כדרך להישאר בקשר עם עצמך.`,
+    pleasure: `הרגע הנעים שבחרת היה: „${labels[0]}”. והסימן שעזר לך לזהות אותו היה: „${labels[1]}”. זו כבר מפה: החוויה, סימן הגוף והתנאים שאִפשרו לה לקרות.`
+  };
+  const lenses = {
+    visibility: ['נראות היא גם היכולת לקבל', 'תודעת עונג מזכירה שלא מספיק שיראו כמה את נותנת. גם החוויה שלך, המאמץ שלך והטוב שמגיע אלייך ראויים להישאר רגע במרכז — בלי הקטנה ובלי החזר מיידי.', 'מה היה משתנה אילו היית מאמינה שלא צריך להרוויח מקום?'],
+    boundaries: ['גבול הוא הדרך של הרצון לקבל צורה', 'תודעת עונג לא שואלת רק למה לומר לא. היא שואלת לאיזה כן את רוצה לפנות מקום. גבול מיטיב אינו היעלמות מהקשר; הוא האפשרות להיות בתוכו בלי להיעלם מעצמך.', 'לאיזה כן שלך הגבול הזה מנסה לפנות מקום?'],
+    pleasure: ['עונג הוא מידע, לא פרס', 'הגוף מספר מה מרכך, מחיה, מסקרן וממלא אותך. כשאת מבחינה גם בתנאים — זמן, פרטיות, בחירה או קשר — את לא רק מחפשת רגע נעים; את לומדת איך לבנות לו מקום.', 'איזה תנאי אחד יכול להפוך רגע נעים לאפשרי יותר?']
+  };
+  const lens = lenses[current.id];
+  const desire = answers[3] && !answers[3].skipped ? labels[3] : 'עוד לא סימנת למה היית רוצה לתת יותר מקום — ואפשר להשאיר את הרצון פתוח.';
+  const practice = answers[4] && !answers[4].skipped ? `את בחרת: „${labels[4]}” אפשר להתייחס לזה כהזמנה, לא כמטלה.` : current.invitation;
+  show(`<div class="report-head"><p class="kicker dark" style="justify-content:center">השיקוף שלך · ${current.title}</p><h3>זה מה שאני שומעת<br>בין התשובות שלך.</h3><p>לא פענוח שלך ולא מסקנה עלייך. רק ניסיון לחבר בין ${answeredCount || 'מעט'} הדברים שבחרת לשתף, ולהחזיר לך שאלה שאפשר להמשיך איתה.</p></div><section class="report-mirror"><span>01 · מה עולה מהתשובות</span><p>${escapeHtml(mirrors[current.id])}</p></section><div class="report-grid"><section class="report-block"><span>כוח שכבר נמצא כאן</span><h4>מה כבר חי בך</h4><p>${escapeHtml(strength)}</p></section><section class="report-block"><span>תנועה שמבקשת מקום</span><h4>ומה מבקש להתרחב</h4><p>${escapeHtml(need)}</p></section></div><section class="pleasure-lens"><span>02 · דרך העיניים של תודעת עונג</span><h4>${lens[0]}</h4><p>${lens[1]}</p></section><div class="report-grid report-next"><section class="report-block"><span>הרצון שסימנת</span><h4>${escapeHtml(desire)}</h4></section><section class="report-block"><span>ניסוי קטן, רק אם מתאים</span><p>${escapeHtml(practice)}</p></section></div><section class="carry-question"><span>שאלה לקחת איתך</span><h4>${lens[2]}</h4></section><details class="answers-report"><summary>לראות את התשובות שלי</summary>${current.questions.map((question, index) => `<div class="answer-row"><small>${question.text}</small><p>${escapeHtml(answerLabel(answers[index], index))}</p></div>`).join('')}</details><p class="report-note">השיקוף הנוכחי נבנה מקומית מהבחירות שלך ואינו נשלח לשרת. הוא אינו אבחון או תחליף לליווי מקצועי.</p><div class="controls"><button class="primary-action" id="printReport" type="button">להדפסה / שמירה כ־PDF</button><button class="secondary-action" id="anotherJourney" type="button">לבחור מסע נוסף</button><a class="secondary-action" href="#meeting">לדבר איתי</a></div>`, 'report-screen');
   host.querySelector('#printReport').onclick = () => window.print();
   host.querySelector('#anotherJourney').onclick = showChoices;
 }
