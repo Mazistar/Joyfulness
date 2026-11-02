@@ -187,4 +187,5 @@ function renderReport() {
 }
 
 document.querySelector('#bookingButton').onclick = () => window.alert('היומן עדיין לא מחובר. כאן תיפתח בהמשך בחירת זמן לשיחה.');
+document.querySelector('#homeEveningButton').onclick = () => window.alert('טופס הפנייה עדיין לא מחובר. כאן יהיה אפשר להשאיר פרטים ולבדוק יחד תאריך לערב ביתי.');
 showChoices();
