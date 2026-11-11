@@ -1,34 +1,22 @@
-# Joyfulness — production architecture
+# Joyfulness — current architecture
 
-## Prototype today
+## Experience
 
-- Static, mobile-first RTL experience.
-- Three short journeys: visibility and gratitude, boundaries and desire, and a pleasure map.
-- Five guided questions per journey, one at a time, with two reflection pauses.
-- A persistent respectful-stop action that leads to a celebration screen and a partial report.
-- Deterministic reflection logic that returns an existing strength, an emerging need, the visitor's own words, and a gentle invitation.
-- In-memory session state only; no personal data leaves the device and refresh clears the answers.
-- Printable/PDF reports are available for full and partial journeys.
-- AI reflection, durable storage, and booking are not connected. The booking button is a visual placeholder.
+- A single Hebrew RTL questionnaire starts immediately, with no introduction screen.
+- Eleven multiple-choice questions map age range, relationship status, contexts, consent, desire, boundaries, cost and a desired next edge.
+- After question four, a short Joyfulness reflection explains that boundaries are contextual and that the goal is not simply to say more “no”.
+- Visitors may skip, go back, or stop early. A partial answer set can still produce a report.
+- The final report is rendered by a fixed server-owned template and can be printed or saved as PDF.
 
-## Recommended production stack
+## Report generation
 
-1. **Frontend:** Next.js or an equivalent React framework, with the current design system and question flow kept as reusable components.
-2. **Application API:** server-side endpoints for creating an optional questionnaire session, accepting answers, generating the reflection, and recording consent only when data is retained or sent.
-3. **AI reflection:** call the OpenAI Responses API from the server only. Use structured JSON output with fixed fields for three patterns, need, desire, first practice, and safety note. Never expose an API key in the browser.
-4. **Data:** encrypted managed Postgres or Supabase. Store contact details separately from answers, record the exact consent text/version and timestamp, and define deletion and retention rules.
-5. **Booking:** link or embed Calendly, Cal.com, Google Calendar appointment schedules, or a clinic-management booking provider. Pass only the minimum required details.
-6. **Email:** a transactional provider such as Brevo or Resend for the reflection copy and booking follow-up, only after explicit consent.
-7. **Safety:** prompt and output guardrails, non-diagnostic language, crisis-response routing, rate limits, abuse protection, audit logs, and human review for flagged content.
+- `POST /api/report` validates and limits the submitted answer set.
+- The current safe local generator creates a personalized report without sending questionnaire data to a third party.
+- A model-backed generator can be enabled after explicit approval to transmit questionnaire answers to the selected model provider.
+- Report language prohibits diagnosis, invented trauma or childhood narratives, stereotyping and fabricated difficulty. It frames protective patterns as adaptations rather than defects.
 
-## AI contract
+## Data and launch decisions
 
-The model should return validated structured data, not free-form HTML. A server template renders the result. The prompt should require tentative language ("ייתכן", "אולי"), prohibit diagnosis and treatment claims, avoid prescriptive advice, and base every observation only on the visitor's supplied answers.
-
-## Decisions needed before launch
-
-- Final clinic/business name, logo, practitioner copy, contact details, privacy policy, and legal terms.
-- Preferred booking system and destination URL.
-- Whether the full answer set is retained, anonymized, or deleted after the reflection.
-- Who may access leads and how long they are retained.
-- Hosting region and applicable privacy/compliance review.
+- Answers are processed in memory and are not written to a database by this site.
+- Before public launch, connect the real contact or booking destination and add final privacy and legal copy.
+- If model generation is enabled, keep the API key in a protected server environment variable; never place it in client code or source control.

@@ -1,7 +1,0 @@
-:root {
-  --serif: "Noto Serif Hebrew", Georgia, serif;
-  --sans: "Heebo", Arial, sans-serif;
-}
-
-html, body, button, textarea { font-family: var(--sans); }
-h1, h2, h3, h4, .brand, .journey-number, .celebration-symbol { font-family: var(--serif); }
