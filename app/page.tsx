@@ -24,7 +24,7 @@ export default function Home() {
           <a href="#moments">רגעים</a>
           <a href="#questionnaire">השאלון</a>
           <a href="#book">משוגעת</a>
-          <a href="#mazi">מזי</a>
+          <a href="/about">מזי</a>
         </nav>
         <a className="header-question" href="#questionnaire">מה נעים לי עכשיו?</a>
       </header>
@@ -193,7 +193,7 @@ export default function Home() {
       <footer className="magazine-footer">
         <a className="footer-logo" href="#top" aria-label="Joyfulness — חזרה לראש העמוד"><Logo light /></a>
         <p>פחות להחזיק. יותר להרגיש.</p>
-        <nav aria-label="ניווט תחתון"><a href="/articles">מאמרים</a><a href="#questionnaire">השאלון</a><a href="#book">משוגעת</a></nav>
+        <nav aria-label="ניווט תחתון"><a href="/articles">מאמרים</a><a href="/about">מי אני</a><a href="#questionnaire">השאלון</a><a href="#book">משוגעת</a></nav>
         <small>© Joyfulness · התשובות בשאלון אינן נשמרות באתר</small>
       </footer>
     </div>
